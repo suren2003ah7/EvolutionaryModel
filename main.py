@@ -1,12 +1,13 @@
 from constants import NUMBER_OF_STEPS
 from drawer import draw
-from grid_service import generate, simulate_step
+from creature_service import creatures
+from simulation_service import initialize, simulate_step
 
-grid = generate()
+initialize()
 
 step = 0
 while step < NUMBER_OF_STEPS:
-    simulate_step(grid)
+    simulate_step()
     step += 1
 
-draw(grid)
+draw(creatures)

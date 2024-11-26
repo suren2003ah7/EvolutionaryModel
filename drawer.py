@@ -1,4 +1,4 @@
 import matplotlib.pyplot as plt
 
-def draw(grid):
+def draw(creatures):
     pass

@@ -1,4 +1,4 @@
-lets say 16 bit 0000000000000000
+lets say 32 bits, first 16 bits are gene information, 12 bits for position and then 4 bits for energy
 
 Grid Environment
 Movement directions: only horizontal and vertical
