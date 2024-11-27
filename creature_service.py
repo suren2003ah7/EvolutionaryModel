@@ -11,22 +11,22 @@ def create_creature():
     creatures.append(creature)
 
 def get_max_energy(creature):
-    pass
+    return BASE_ENERGY_LEVEL*get_stamina(creature)
 
 def get_speed(creature):
-    return creature >> 30
+    return (creature >> 30) & (0b11) + 1
 
 def get_eyesight(creature):
-    return (creature << 2) >> 29
+    return (creature >> 27) & (0b111)
 
 def get_aggression(creature):
-    return (creature << 5) >> 29
+    return (creature >> 24) & (0b111)
 
 def get_strength(creature):
-    return (creature << 8) >> 28
+    return (creature >> 20) & (0b1111) + 1
 
 def get_stamina(creature):
-    return (creature << 12) >> 28
+    return (creature >> 16) & (0b1111) + 1
 
 def get_energy(creature):
     pass
