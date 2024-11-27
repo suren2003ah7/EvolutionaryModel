@@ -1,6 +1,6 @@
 import numpy as np
 from random import randint, random, choice
-from constants import BASE_ENERGY_LEVEL, NUMBER_OF_CHILDREN_PER_REPRODUCTION, PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION
+from constants import BASE_ENERGY_LEVEL, NUMBER_OF_CHILDREN_PER_REPRODUCTION, PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION, ENERGY_RATIO_REQUIRED_TO_REPRODUCE, ENERGY_RATIO_SPENT_TO_REPRODUCE, ENERGY_GAINED_FROM_EATING_FOOD, ENERGY_GAINED_FROM_EATING_CREATURE
 
 creatures = []
 
@@ -77,7 +77,7 @@ def fight(creature, other_creature):
     return other_creature
 
 def reproduce_if_possible(creature):
-    if get_energy(creature) < int(get_max_energy(creature) * 0.8):
+    if get_energy(creature) < int(get_max_energy(creature) * ENERGY_RATIO_REQUIRED_TO_REPRODUCE):
         return
     number_of_offsprings = NUMBER_OF_CHILDREN_PER_REPRODUCTION
     while number_of_offsprings > 0:
@@ -90,7 +90,7 @@ def reproduce_if_possible(creature):
         offspring = set_energy(offspring, get_max_energy(offspring))
         creatures.append(offspring)
         number_of_offsprings -= 1
-    new_energy = int(get_energy(creature) - int(get_max_energy(creature) * 0.5))
+    new_energy = int(get_energy(creature) - int(get_max_energy(creature) * ENERGY_RATIO_SPENT_TO_REPRODUCE))
     set_energy(creature, new_energy)
 
 def try_mutating_speed(creature):
@@ -159,7 +159,11 @@ def try_mutating_stamina(creature):
     return creature
 
 def eat_food(creature):
-    pass
+    new_energy = min(get_energy(creature) + ENERGY_GAINED_FROM_EATING_FOOD, get_max_energy(creature))
+    creature = set_energy(creature, new_energy)
+    return creature
 
 def eat_creature(creature):
-    pass
+    new_energy = min(get_energy(creature) + ENERGY_GAINED_FROM_EATING_CREATURE, get_max_energy(creature))
+    creature = set_energy(creature, new_energy)
+    return creature

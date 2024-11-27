@@ -18,7 +18,7 @@ def get_food_position(food):
     return [x, y]
 
 def get_position_as_12_bit_number(creature):
-    return (creature & (0b111111111111 << 4)) >> 4
+    return (creature & 0b00000000000000001111111111110000) >> 4
 
 def get_neighbours(creature):
     neighbours = []

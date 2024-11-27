@@ -30,7 +30,9 @@ def simulate_individual_creature_step(creature):
         reproduce_if_possible(winner)
         return
     if get_position_as_12_bit_number(creature) in foods:
-        eat_food(creature)
+        creatures.remove(creature)
+        creature = eat_food(creature)
+        creatures.append(creature)
         foods.remove(get_position_as_12_bit_number(creature))
         reproduce_if_possible(creature)
         return
