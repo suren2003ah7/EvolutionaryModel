@@ -14,19 +14,19 @@ def get_max_energy(creature):
     pass
 
 def get_speed(creature):
-    pass
+    return creature >> 30
 
 def get_eyesight(creature):
-    pass
+    return (creature << 2) >> 29
 
 def get_aggression(creature):
-    pass
+    return (creature << 5) >> 29
 
 def get_strength(creature):
-    pass
+    return (creature << 8) >> 28
 
 def get_stamina(creature):
-    pass
+    return (creature << 12) >> 28
 
 def get_energy(creature):
     pass
