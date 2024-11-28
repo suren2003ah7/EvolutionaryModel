@@ -1,17 +1,26 @@
 import numpy as np
 from random import randint, random, choice
-from constants import BASE_ENERGY_LEVEL, NUMBER_OF_CHILDREN_PER_REPRODUCTION, PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION, ENERGY_RATIO_REQUIRED_TO_REPRODUCE, ENERGY_RATIO_SPENT_TO_REPRODUCE, ENERGY_GAINED_FROM_EATING_FOOD, ENERGY_GAINED_FROM_EATING_CREATURE
+from constants import (BASE_ENERGY_LEVEL, NUMBER_OF_CHILDREN_PER_REPRODUCTION,
+                       PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION, ENERGY_RATIO_REQUIRED_TO_REPRODUCE,
+                       ENERGY_RATIO_SPENT_TO_REPRODUCE, ENERGY_GAINED_FROM_EATING_FOOD,
+                       ENERGY_GAINED_FROM_EATING_CREATURE, GRID_SIZE)
+from grid_service import set_creature_position, get_creature_position
 
 creatures = []
 
 def create_creature():
+    x = randint(0, GRID_SIZE - 1)
+    y = randint(0, GRID_SIZE - 1)
     creature = np.uint32(randint(0, 2**32 - 1))
+    creature = set_creature_position(creature, x, y)
     creature = set_energy(creature, get_max_energy(creature))
     creatures.append(creature)
 
-def create_offspring(gene):
+def create_offspring(parent_creature):
     offspring = np.uint32(randint(0, 2**32 - 1))
-    return (offspring & 0b00000000000000001111111111111111) | (gene << 16)
+    offspring = (offspring & 0b00000000000000001111111111111111) | (get_gene(parent_creature) << 16)
+    offspring = set_creature_position(offspring, *get_creature_position(parent_creature))
+    return offspring
 
 def get_max_energy(creature):
     return BASE_ENERGY_LEVEL + get_stamina(creature)
@@ -56,51 +65,50 @@ def set_energy(creature, new_energy):
     return (creature & 0b11111111111111111111111111110000) | new_energy
 
 def is_creature_fighting(creature):
-    p = get_aggression(creature)/7
+    p = get_aggression(creature) / 7
     return random() <= p
 
-def fight(creature, other_creature):
+def fight(creature, other_creature, creatures_to_remove):
     strength = get_strength(creature)
     other_strength = get_strength(other_creature)
     total_strength = strength + other_strength
     outcome = randint(1, total_strength)
     if outcome <= strength:
-        creatures.remove(other_creature)
-        creatures.remove(creature)
+        creatures_to_remove.append(other_creature)
         creature = eat_creature(creature)
-        creatures.append(creature)
         return creature
-    creatures.remove(creature)
-    creatures.remove(other_creature)
-    other_creature = eat_creature(other_creature)
-    creatures.append(other_creature)
-    return other_creature
+    else:
+        creatures_to_remove.append(creature)
+        other_creature = eat_creature(other_creature)
+        return other_creature
 
 def reproduce_if_possible(creature):
     if get_energy(creature) < int(get_max_energy(creature) * ENERGY_RATIO_REQUIRED_TO_REPRODUCE):
-        return
+        return []
+    offsprings = []
     number_of_offsprings = NUMBER_OF_CHILDREN_PER_REPRODUCTION
     while number_of_offsprings > 0:
-        offspring = create_offspring(get_gene(creature))
+        offspring = create_offspring(creature)
         offspring = try_mutating_speed(offspring)
         offspring = try_mutating_eyesight(offspring)
         offspring = try_mutating_aggression(offspring)
         offspring = try_mutating_strength(offspring)
         offspring = try_mutating_stamina(offspring)
         offspring = set_energy(offspring, get_max_energy(offspring))
-        creatures.append(offspring)
+        offsprings.append(offspring)
         number_of_offsprings -= 1
     new_energy = int(get_energy(creature) - int(get_max_energy(creature) * ENERGY_RATIO_SPENT_TO_REPRODUCE))
-    set_energy(creature, new_energy)
+    creature = set_energy(creature, new_energy)
+    return offsprings
 
 def try_mutating_speed(creature):
     if random() <= PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
         mutation = choice([-1, 1])
         speed = get_speed(creature)
-        if speed == 1:
-            speed += 1
-        elif speed == 4:
-            speed -= 1
+        if speed == 1 and mutation == -1:
+            speed = 1
+        elif speed == 4 and mutation == 1:
+            speed = 4
         else:
             speed += mutation
         creature = set_speed(creature, speed)
@@ -110,10 +118,10 @@ def try_mutating_eyesight(creature):
     if random() <= PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
         mutation = choice([-1, 1])
         eyesight = get_eyesight(creature)
-        if eyesight == 0:
-            eyesight += 1
-        elif eyesight == 7:
-            eyesight -= 1
+        if eyesight == 0 and mutation == -1:
+            eyesight = 0
+        elif eyesight == 7 and mutation == 1:
+            eyesight = 7
         else:
             eyesight += mutation
         creature = set_eyesight(creature, eyesight)
@@ -123,10 +131,10 @@ def try_mutating_aggression(creature):
     if random() <= PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
         mutation = choice([-1, 1])
         aggression = get_aggression(creature)
-        if aggression == 0:
-            aggression += 1
-        elif aggression == 7:
-            aggression -= 1
+        if aggression == 0 and mutation == -1:
+            aggression = 0
+        elif aggression == 7 and mutation == 1:
+            aggression = 7
         else:
             aggression += mutation
         creature = set_aggression(creature, aggression)
@@ -136,10 +144,10 @@ def try_mutating_strength(creature):
     if random() <= PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
         mutation = choice([-1, 1])
         strength = get_strength(creature)
-        if strength == 1:
-            strength += 1
-        elif strength == 16:
-            strength -= 1
+        if strength == 1 and mutation == -1:
+            strength = 1
+        elif strength == 16 and mutation == 1:
+            strength = 16
         else:
             strength += mutation
         creature = set_strength(creature, strength)
@@ -149,10 +157,10 @@ def try_mutating_stamina(creature):
     if random() <= PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
         mutation = choice([-1, 1])
         stamina = get_stamina(creature)
-        if stamina == -7:
-            stamina += 1
-        elif stamina == 8:
-            stamina -= 1
+        if stamina == -7 and mutation == -1:
+            stamina = -7
+        elif stamina == 8 and mutation == 1:
+            stamina = 8
         else:
             stamina += mutation
         creature = set_stamina(creature, stamina)
