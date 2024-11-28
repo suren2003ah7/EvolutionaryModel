@@ -44,7 +44,7 @@ def set_strength(creature, new_strength):
     return (creature & 0b11111111000011111111111111111111) | ((new_strength - 1) << 20)
 
 def get_stamina(creature):
-    return int(((creature >> 16) & 0b1111) - 7)
+    return int((creature >> 16) & 0b1111) - 7
 
 def set_stamina(creature, new_stamina):
     return (creature & 0b11111111111100001111111111111111) | ((new_stamina + 7) << 16)
