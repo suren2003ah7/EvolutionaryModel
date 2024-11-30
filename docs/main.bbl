@@ -1,0 +1,27 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Roff%
+}{%
+Roff%
+}{%
+{\protect \APACyear {2008}}%
+}]{%
+Roff_2008}
+\APACinsertmetastar {%
+Roff_2008}%
+\begin{APACrefauthors}%
+Roff, D\BPBI A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2008}{Dec}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Defining fitness in evolutionary models} {Defining fitness in evolutionary models}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Genetics}{87}{4}{339–348}.
+\newblock
+\begin{APACrefDOI} \doi{10.1007/s12041-008-0056-9} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}
