@@ -8,12 +8,12 @@ from constants import (BASE_ENERGY_LEVEL, NUMBER_OF_CHILDREN_PER_REPRODUCTION,
 creatures = []
 
 def create_creature():
-    creature = np.uint32(randint(0, 2**32 - 1))
+    creature = randint(0, 2**32 - 1)
     creature = set_energy(creature, get_max_energy(creature))
     creatures.append(creature)
 
 def create_offspring(parent_creature):
-    offspring = np.uint32(randint(0, 2**32 - 1))
+    offspring = randint(0, 2**32 - 1)
     offspring = (offspring & 0b00000000000000001111111111111111) | (get_gene(parent_creature) << 16)
     return offspring
 
