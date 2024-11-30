@@ -5,6 +5,7 @@
 \usepackage{float}
 \usepackage{tikz}
 \usepackage{amsmath}
+\usepackage{graphicx}
 \usepackage[affil-it]{authblk}\hypersetup{
     colorlinks,
     citecolor=black,
@@ -25,7 +26,10 @@
 \begin{document}
 \maketitle
 \tableofcontents
-\section{Abstract}
+\section{Introduction}
+We are simulation a population model, where every creature has a gene and we are investigating the mutations of different genes.
+This is trying to mimic real life evulation with mutation.\\\\
+\textit{To be continued...}
 \section{Methods}
 \subsubsection{Creature}
 A creature is defined with its genome, position and energy.
@@ -44,6 +48,13 @@ If a creature gains energy with a certain ratio of its maxmimum energy, it repro
 The offspring is spawned in an adjacent positon and each gene is copied from its parent, with a certain probability for each gene to change by a value of 1.
 \subsection{Memory optimization}
 The creature is defined as an unsigned 32-bit integer, where the first 16 bits represent the genome, the next 12 bits represent its position cell and the last 4 bits represent the energy.
+\subsection{Energy loss}
+\[\text{energy loss}=\text{steps}+\left\lceil\frac{\text{eyesight}}{3}\right\rceil+\left\lfloor\frac{\text{aggression}}{5}\right\rfloor+\left\lfloor\sqrt{\text{strength}}\right\rfloor+\left\lfloor\frac{\text{stamina}}{7}+1\right\rfloor\]
+\[\text{eyesight}\in\{0,1,...,7\}\]
+\[\text{aggression}\in\{0,1,...,7\}\]
+\[\text{strength}\in\{1,2,...,16\}\]
+\[\text{stamina}\in\{-7,-6,...,8\}\]
+All these values have an effect on how much energy the creature spends. Steps are the number of steps. We have no energy loss from aggression, up until the value of 5.
 \begin{table}[H]
 \begin{center}
     \begin{tabular}{|p{0.11\linewidth} |p{0.08\linewidth}|p{0.7\linewidth}|}
@@ -137,7 +148,20 @@ The following constants were chosen for our simulations:
     \caption{Creature characteristics and their descriptions}
     \end{center}
     \end{table}
+\begin{center}
+    \includegraphics[scale=0.2]{images/image1.jpg}
+\end{center}
+\begin{center}
+    \includegraphics[scale=0.2]{images/image2.jpg}
+\end{center}
+Code is availabe at \href{https://github.com/suren2003ah7/EvolutionaryModel}{https://github.com/suren2003ah7/EvolutionaryModel}.
 \section{Discussion}
+We have simulated the model with several cases, however we may try on more complex cases.
+\begin{enumerate}
+    \item Random genes. Try many random genes for creatures and see if we reach equilibrium of one gene.
+    \item Strong specific genes. Start with high values for specific genes and see if we reach equilibrium or not after mutaitons.
+    \item Record the evolution of each gene by averaging that genes during each timestep.
+\end{enumerate}
 \nocite{*}
 \bibliographystyle{apacite}
 \bibliography{refs}
