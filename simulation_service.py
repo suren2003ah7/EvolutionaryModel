@@ -1,9 +1,9 @@
 from random import choice
 from constants import INITIAL_NUMBER_OF_CREATURES
-from creature_service import creatures, create_creature, eat_food, get_eyesight, reproduce_if_possible, is_creature_fighting, fight, get_speed
+from creature_service import creatures, create_creature, eat_food, get_eyesight, reproduce_if_possible, is_creature_fighting, fight, get_speed, get_energy, set_energy, get_creature_position, set_creature_position
 from food_service import foods, create_food
-from grid_service import (get_position_as_12_bit_number, get_neighbours,
-                          get_foods_in_eyesight, move_random, move_towards_food)
+from grid_service import (get_neighbours,
+                          get_foods_in_eyesight, move_random, move_towards_food, get_position_as_12_bit_number)
 
 creatures_already_fought_in_current_round = []
 
@@ -35,32 +35,40 @@ def simulate_step():
 
 def simulate_individual_creature_step(creature, creatures_to_remove):
     creatures_to_add = []
-    neighbours = get_neighbours(creature, creatures)
+    neighbours = get_neighbours(creature, creatures, get_creature_position)
     if len(neighbours) != 0 and is_creature_fighting(creature):
         target_neighbour = choice(neighbours)
         winner = fight(creature, target_neighbour, creatures_to_remove)
         creatures_already_fought_in_current_round.append(winner)
-        offspring = reproduce_if_possible(winner)
+        creature = winner
+        offspring = reproduce_if_possible(creature)
         if offspring:
             creatures_to_add.extend(offspring)
-        return winner, creatures_to_add
-    position = get_position_as_12_bit_number(creature)
-    if position in foods:
-        foods.remove(position)
+    elif get_position_as_12_bit_number(creature) in foods:
+        foods.remove(get_position_as_12_bit_number(creature))
         creature = eat_food(creature)
         offspring = reproduce_if_possible(creature)
         if offspring:
             creatures_to_add.extend(offspring)
-        return creature, creatures_to_add
-    eyesight = get_eyesight(creature)
-    foods_in_eyesight = get_foods_in_eyesight(creature, eyesight)
-    if len(foods_in_eyesight) != 0:
-        target_food = choice(foods_in_eyesight)
-        number_of_moves = get_speed(creature)
-        creature = move_towards_food(creature, target_food, number_of_moves)
     else:
+        eyesight = get_eyesight(creature)
+        foods_in_eyesight = get_foods_in_eyesight(creature, eyesight, get_creature_position)
         number_of_moves = get_speed(creature)
-        creature = move_random(creature, number_of_moves)
+        if len(foods_in_eyesight) != 0:
+            target_food = choice(foods_in_eyesight)
+            creature, energy_loss = move_towards_food(creature, target_food, number_of_moves, get_creature_position, set_creature_position)
+        else:
+            creature, energy_loss = move_random(creature, number_of_moves, get_creature_position, set_creature_position)
+        # Update creature's energy after movement
+        new_energy = get_energy(creature) - energy_loss
+        creature = set_energy(creature, new_energy)
+        # After moving, check for reproduction
+        offspring = reproduce_if_possible(creature)
+        if offspring:
+            creatures_to_add.extend(offspring)
+    # After all actions, check if creature's energy is zero or less
+    if get_energy(creature) <= 0:
+        creatures_to_remove.append(creature)
     return creature, creatures_to_add
 
 def simulate_food():

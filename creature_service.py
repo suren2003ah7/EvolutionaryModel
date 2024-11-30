@@ -4,7 +4,6 @@ from constants import (BASE_ENERGY_LEVEL, NUMBER_OF_CHILDREN_PER_REPRODUCTION,
                        PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION, ENERGY_RATIO_REQUIRED_TO_REPRODUCE,
                        ENERGY_RATIO_SPENT_TO_REPRODUCE, ENERGY_GAINED_FROM_EATING_FOOD,
                        ENERGY_GAINED_FROM_EATING_CREATURE, GRID_SIZE)
-from grid_service import set_creature_position, get_creature_position
 
 creatures = []
 
@@ -62,7 +61,7 @@ def get_energy(creature):
     return creature & 0b1111
 
 def set_energy(creature, new_energy):
-    return (creature & 0b11111111111111111111111111110000) | new_energy
+    return (creature & 0b11111111111111111111111111110000) | max(new_energy, 0)  # Ensure energy is not negative
 
 def is_creature_fighting(creature):
     p = get_aggression(creature) / 7
@@ -174,4 +173,15 @@ def eat_food(creature):
 def eat_creature(creature):
     new_energy = min(get_energy(creature) + ENERGY_GAINED_FROM_EATING_CREATURE, get_max_energy(creature))
     creature = set_energy(creature, new_energy)
+    return creature
+
+# Position functions moved here to avoid circular import
+def get_creature_position(creature):
+    x = (creature & (0b111111 << 10)) >> 10
+    y = (creature & (0b111111 << 4)) >> 4
+    return [x, y]
+
+def set_creature_position(creature, x, y):
+    creature = (creature & ~(0b111111 << 10)) | (x << 10)
+    creature = (creature & ~(0b111111 << 4)) | (y << 4)
     return creature

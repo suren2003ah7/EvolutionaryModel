@@ -1,22 +1,38 @@
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-from grid_service import get_creature_position, get_food_position
+from matplotlib.widgets import Slider
 from constants import GRID_SIZE
 
+
+def get_creature_position(creature):
+    x = (creature & (0b111111 << 10)) >> 10
+    y = (creature & (0b111111 << 4)) >> 4
+    return [x, y]
+
+
+def get_food_position(food):
+    x = (food & (0b111111 << 6)) >> 6
+    y = food & 0b111111
+    return [x, y]
+
+
 def animate_simulation(simulation_data):
-    fig, ax = plt.subplots(figsize=(6,6))
+    fig, ax = plt.subplots(figsize=(6, 6))
+    plt.subplots_adjust(bottom=0.2)  # Make space for the slider
     ax.set_xlim(0, GRID_SIZE)
     ax.set_ylim(0, GRID_SIZE)
-    scat_creatures = ax.scatter([], [], c='blue', s=20, label='Creatures')
-    scat_foods = ax.scatter([], [], c='green', s=10, label='Foods')
-    ax.legend()
-    ax.set_title('Simulation Over Time')
+    scat_creatures = ax.scatter([], [], c='blue', s=20)
+    scat_foods = ax.scatter([], [], c='green', s=10)
     ax.set_xlabel('X Position')
     ax.set_ylabel('Y Position')
     ax.grid(True)
 
-    def update(frame):
-        creatures, foods = simulation_data[frame]
+    # Create the slider
+    ax_slider = plt.axes([0.2, 0.05, 0.6, 0.03])
+    slider = Slider(ax_slider, 'Step', 1, len(simulation_data), valinit=1, valstep=1)
+
+    def update(val):
+        frame = int(slider.val) - 1  # Adjust for zero-based index
+        creatures, foods_list = simulation_data[frame]
         x_creatures = []
         y_creatures = []
         for creature in creatures:
@@ -25,14 +41,14 @@ def animate_simulation(simulation_data):
             y_creatures.append(y)
         x_foods = []
         y_foods = []
-        for food in foods:
+        for food in foods_list:
             x, y = get_food_position(food)
             x_foods.append(x)
             y_foods.append(y)
         scat_creatures.set_offsets(list(zip(x_creatures, y_creatures)))
         scat_foods.set_offsets(list(zip(x_foods, y_foods)))
-        ax.set_title(f'Simulation at Step {frame+1}')
-        return scat_creatures, scat_foods
+        fig.canvas.draw_idle()
 
-    ani = FuncAnimation(fig, update, frames=len(simulation_data), blit=True, interval=50)
+    slider.on_changed(update)
+    update(1)  # Initialize with the first frame
     plt.show()
