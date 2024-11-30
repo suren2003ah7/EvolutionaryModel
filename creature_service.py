@@ -82,7 +82,7 @@ def fight(creature, other_creature, creatures_to_remove):
 
 def reproduce_if_possible(creature):
     if get_energy(creature) < int(get_max_energy(creature) * ENERGY_RATIO_REQUIRED_TO_REPRODUCE):
-        return []
+        return creature, []
     offsprings = []
     number_of_offsprings = NUMBER_OF_CHILDREN_PER_REPRODUCTION
     while number_of_offsprings > 0:
