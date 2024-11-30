@@ -14,10 +14,9 @@ step = 0
 while step < NUMBER_OF_STEPS:
     start = time.time()
     simulate_step()
-    simulation_data.append([creatures.copy(), foods.copy()])
+    simulation_data.append((creatures.copy(), foods.copy()))
     step += 1
     end = time.time()
     print(f"Step {step}: Time {end - start}")
-    print(simulation_data[step - 1])
 
-# animate_simulation(simulation_data)
+animate_simulation(simulation_data)
