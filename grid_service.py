@@ -1,38 +1,48 @@
 from food_service import foods
 from numpy import random
-from constants import ENERGY_LOSS_PER_MOVE  # Import the new constant
+from constants import ENERGY_LOSS_PER_MOVE
+
+def get_creature_position(creature):
+    x = (creature & (0b111111 << 10)) >> 10
+    y = (creature & (0b111111 << 4)) >> 4
+    return [x, y]
+
+def set_creature_position(creature, x, y):
+    creature = (creature & ~(0b111111 << 10)) | (x << 10)
+    creature = (creature & ~(0b111111 << 4)) | (y << 4)
+    return creature
 
 def get_food_position(food):
     x = (food & (0b111111 << 6)) >> 6
     y = food & 0b111111
     return [x, y]
 
-def get_neighbours(creature, creatures, get_creature_position_func):
+def get_neighbours(creature, creatures, creatures_to_remove):
     neighbours = []
-    creature_pos = get_creature_position_func(creature)
+    creature_pos = get_creature_position(creature)
     for other_creature in creatures:
         if other_creature == creature:
             continue
-        if get_creature_position_func(other_creature) == creature_pos:
+        if get_creature_position(other_creature) == creature_pos and other_creature not in creatures_to_remove:
             neighbours.append(other_creature)
     return neighbours
 
-def get_foods_in_eyesight(creature, eyesight, get_creature_position_func):
+def get_foods_in_eyesight(creature, eyesight):
     foods_in_eyesight = []
     food_positions = []
     for food in foods:
         food_positions.append(get_food_position(food))
-    viewable_cells = get_viewable_cells(get_creature_position_func(creature), eyesight)
+    viewable_cells = get_viewable_cells(get_creature_position(creature), eyesight)
     for viewable_cell in viewable_cells:
         if viewable_cell in food_positions:
             food_index = food_positions.index(viewable_cell)
             foods_in_eyesight.append(foods[food_index])
     return foods_in_eyesight
 
-def move_towards_food(creature, food, number_of_moves, get_creature_position_func, set_creature_position_func):
-    creature_x, creature_y = get_creature_position_func(creature)
+def move_towards_food(creature, food, number_of_moves):
+    creature_x, creature_y = get_creature_position(creature)
     food_x, food_y = get_food_position(food)
-    energy_loss = 0  # Track energy loss
+    energy_loss = 0
     while number_of_moves > 0:
         if food_x == creature_x and food_y == creature_y:
             break
@@ -45,13 +55,13 @@ def move_towards_food(creature, food, number_of_moves, get_creature_position_fun
         elif food_y < creature_y:
             creature_y -= 1
         number_of_moves -= 1
-        energy_loss += ENERGY_LOSS_PER_MOVE  # Reduce energy per move
-    creature = set_creature_position_func(creature, creature_x, creature_y)
+        energy_loss += ENERGY_LOSS_PER_MOVE
+    creature = set_creature_position(creature, creature_x, creature_y)
     return creature, energy_loss
 
-def move_random(creature, number_of_moves, get_creature_position_func, set_creature_position_func):
-    x, y = get_creature_position_func(creature)
-    energy_loss = 0  # Track energy loss
+def move_random(creature, number_of_moves):
+    x, y = get_creature_position(creature)
+    energy_loss = 0
     while number_of_moves > 0:
         directions = get_possible_movement_directions(x, y)
         direction = random.choice(directions)
@@ -64,8 +74,8 @@ def move_random(creature, number_of_moves, get_creature_position_func, set_creat
         elif direction == 'right':
             x += 1
         number_of_moves -= 1
-        energy_loss += ENERGY_LOSS_PER_MOVE  # Reduce energy per move
-    creature = set_creature_position_func(creature, x, y)
+        energy_loss += ENERGY_LOSS_PER_MOVE
+    creature = set_creature_position(creature, x, y)
     return creature, energy_loss
 
 def get_possible_movement_directions(x, y):

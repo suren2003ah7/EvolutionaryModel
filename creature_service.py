@@ -3,22 +3,18 @@ from random import randint, random, choice
 from constants import (BASE_ENERGY_LEVEL, NUMBER_OF_CHILDREN_PER_REPRODUCTION,
                        PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION, ENERGY_RATIO_REQUIRED_TO_REPRODUCE,
                        ENERGY_RATIO_SPENT_TO_REPRODUCE, ENERGY_GAINED_FROM_EATING_FOOD,
-                       ENERGY_GAINED_FROM_EATING_CREATURE, GRID_SIZE)
+                       ENERGY_GAINED_FROM_EATING_CREATURE)
 
 creatures = []
 
 def create_creature():
-    x = randint(0, GRID_SIZE - 1)
-    y = randint(0, GRID_SIZE - 1)
     creature = np.uint32(randint(0, 2**32 - 1))
-    creature = set_creature_position(creature, x, y)
     creature = set_energy(creature, get_max_energy(creature))
     creatures.append(creature)
 
 def create_offspring(parent_creature):
     offspring = np.uint32(randint(0, 2**32 - 1))
     offspring = (offspring & 0b00000000000000001111111111111111) | (get_gene(parent_creature) << 16)
-    offspring = set_creature_position(offspring, *get_creature_position(parent_creature))
     return offspring
 
 def get_max_energy(creature):
@@ -175,13 +171,3 @@ def eat_creature(creature):
     creature = set_energy(creature, new_energy)
     return creature
 
-# Position functions moved here to avoid circular import
-def get_creature_position(creature):
-    x = (creature & (0b111111 << 10)) >> 10
-    y = (creature & (0b111111 << 4)) >> 4
-    return [x, y]
-
-def set_creature_position(creature, x, y):
-    creature = (creature & ~(0b111111 << 10)) | (x << 10)
-    creature = (creature & ~(0b111111 << 4)) | (y << 4)
-    return creature

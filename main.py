@@ -17,6 +17,7 @@ while step < NUMBER_OF_STEPS:
     simulation_data.append((creatures.copy(), foods.copy()))
     step += 1
     end = time.time()
-    print(f"Step {step}: Time {end-start}")
+    print(f"Step {step}: Time {end - start}")
+    print(simulation_data)
 
-animate_simulation(simulation_data)
+# animate_simulation(simulation_data)

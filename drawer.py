@@ -1,19 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 from constants import GRID_SIZE
-
-
-def get_creature_position(creature):
-    x = (creature & (0b111111 << 10)) >> 10
-    y = (creature & (0b111111 << 4)) >> 4
-    return [x, y]
-
-
-def get_food_position(food):
-    x = (food & (0b111111 << 6)) >> 6
-    y = food & 0b111111
-    return [x, y]
-
+from grid_service import get_creature_position, get_food_position
 
 def animate_simulation(simulation_data):
     fig, ax = plt.subplots(figsize=(6, 6))
