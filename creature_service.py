@@ -1,4 +1,5 @@
 import numpy as np
+from math import ceil, floor, sqrt
 from random import randint, random, choice
 from constants import (BASE_ENERGY_LEVEL, NUMBER_OF_CHILDREN_PER_REPRODUCTION,
                        PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION, ENERGY_RATIO_REQUIRED_TO_REPRODUCE,
@@ -57,7 +58,7 @@ def get_energy(creature):
     return creature & 0b1111
 
 def set_energy(creature, new_energy):
-    return (creature & 0b11111111111111111111111111110000) | max(new_energy, 0)  # Ensure energy is not negative
+    return (creature & 0b11111111111111111111111111110000) | max(new_energy, 0)
 
 def is_creature_fighting(creature):
     p = get_aggression(creature) / 7
@@ -70,10 +71,12 @@ def fight(creature, other_creature, creatures_to_remove):
     outcome = randint(1, total_strength)
     if outcome <= strength:
         creatures_to_remove.append(other_creature)
+        creature = calculate_and_set_new_energy(creature, 0)
         creature = eat_creature(creature)
         return creature
     else:
         creatures_to_remove.append(creature)
+        other_creature = calculate_and_set_new_energy(other_creature, 0)
         other_creature = eat_creature(other_creature)
         return other_creature
 
@@ -94,7 +97,7 @@ def reproduce_if_possible(creature):
         number_of_offsprings -= 1
     new_energy = int(get_energy(creature) - int(get_max_energy(creature) * ENERGY_RATIO_SPENT_TO_REPRODUCE))
     creature = set_energy(creature, new_energy)
-    return offsprings
+    return creature, offsprings
 
 def try_mutating_speed(creature):
     if random() <= PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
@@ -170,4 +173,12 @@ def eat_creature(creature):
     new_energy = min(get_energy(creature) + ENERGY_GAINED_FROM_EATING_CREATURE, get_max_energy(creature))
     creature = set_energy(creature, new_energy)
     return creature
+
+def calculate_and_set_new_energy(creature, number_of_steps):
+    current_energy = get_energy(creature)
+    energy_loss = (number_of_steps + ceil(get_eyesight(creature) / 3) +
+                   floor(get_aggression(creature) / 5) + floor(sqrt(get_strength(creature))) +
+                   floor((get_stamina(creature) / 7) + 1))
+    new_energy = current_energy - energy_loss
+    return set_energy(creature, new_energy)
 
