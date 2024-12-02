@@ -16,6 +16,9 @@
 \usepackage{apacite}
 \usepackage[authoryear]{natbib}
 
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1em}
+
 \title{Evolutionary Models with a Large Number of Genes}
 \author{
     Mher Saribekyan, Suren Hakobyan, Davit Badalyan\\
@@ -25,11 +28,23 @@
 \date{November 2024}
 \begin{document}
 \maketitle
-% \tableofcontents
+\newpage
+\tableofcontents
+\newpage
+
 \section{Introduction}
-We are simulation a population model, where every creature has a gene and we are investigating the mutations of different genes.
-This is trying to mimic real life evulation with mutation.\\\\
-\textit{To be continued...}
+Have you ever asked yourself how humanity has reached its current state of being? Have you ever wondered how some species (including humans) survived throughout centuries of changing environment, while others went extinct? The answer to these and many other questions lie in the broad study of evolution. 
+
+According to Cambridge Dictionary, evolution is defined as \textit{"the way in which living things change and develop over millions of years."} Living things inevitably change over time due to multiple reasons. For example, a long-term food shortage caused by the change in the environment can force a given species to eat less, which over time will affect the next generations of the same species. The new generations might become more and more resistant to starvation and require less nutrition to survive. During this transition, many representatives of the species might die, and in some cases the species might fail to adapt and go extinct. However, if it \textbf{evolves} successfully, then the species will continue it's existence in the new environment, which might once again change in the future. 
+
+A more scientific definition to the term evolution was given by Douglas Futuyma in his popular textbook.
+
+\begin{quotation}
+    [biological evolution] is change in the properties of groups of organisms over the course of generations…it embraces everything from slight changes in the proportions of different forms of a gene within a population to the alterations that led from the earliest organism to dinosaurs, bees, oaks, and humans.
+\end{quotation}
+
+Evolution can occur by different means, such as natural selection, genetic drift, mutation, migration and so on. This report will simulate the process of species evolving over time by adapting to their environment through mutations and natural selection. It will explore scenarios with different starting conditions, where diverse creatures with unique genes inhabit varying environments. The study will examine how these genes mutate over time and determine which mutations dominate in each specific setting.
+
 \section{Methods}
 \subsubsection{Creature}
 A creature is defined with its genome, position and energy.
