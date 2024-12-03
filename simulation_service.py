@@ -1,6 +1,6 @@
 from random import choice
 from constants import INITIAL_NUMBER_OF_CREATURES
-from creature_service import creatures, create_creature, eat_food, get_eyesight, reproduce_if_possible, is_creature_fighting, fight, get_speed, get_energy, calculate_and_set_new_energy
+from creature_service import creatures, create_creature, create_creature_from_gene, eat_food, get_eyesight, reproduce_if_possible, is_creature_fighting, fight, get_speed, get_energy, calculate_and_set_new_energy
 from food_service import foods, create_food
 from grid_service import (get_neighbours,
                           get_foods_in_eyesight, move_random, move_towards_food, get_position_as_12_bit_number)
@@ -12,6 +12,13 @@ def initialize():
     foods.clear()
     for _ in range(INITIAL_NUMBER_OF_CREATURES):
         create_creature()
+    simulate_food()
+
+def initialize_from_gene(gene):
+    creatures.clear()
+    foods.clear()
+    for _ in range(INITIAL_NUMBER_OF_CREATURES):
+        create_creature_from_gene(gene)
     simulate_food()
 
 def simulate_step():
