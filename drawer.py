@@ -1,42 +1,96 @@
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
+import matplotlib.animation as animation
+import numpy as np
+from matplotlib.widgets import Button
 from constants import GRID_SIZE
 from grid_service import get_creature_position, get_food_position
 
-def animate_simulation(simulation_data):
+
+def animate_simulation(simulation_data, interval=200):
     fig, ax = plt.subplots(figsize=(6, 6))
-    plt.subplots_adjust(bottom=0.2)  # Make space for the slider
+    plt.subplots_adjust(bottom=0.2)
     ax.set_xlim(0, GRID_SIZE)
     ax.set_ylim(0, GRID_SIZE)
-    scat_creatures = ax.scatter([], [], c='blue', s=20)
-    scat_foods = ax.scatter([], [], c='green', s=10)
     ax.set_xlabel('X Position')
     ax.set_ylabel('Y Position')
     ax.grid(True)
 
-    # Create the slider
-    ax_slider = plt.axes([0.2, 0.05, 0.6, 0.03])
-    slider = Slider(ax_slider, 'Step', 1, len(simulation_data), valinit=1, valstep=1)
+    # Initialize scatter plots
+    scat_creatures = ax.scatter([], [], c='blue', s=20, label='Creatures')
+    scat_foods = ax.scatter([], [], c='green', s=10, label='Food')
+    ax.legend(loc='upper right')
 
-    def update(val):
-        frame = int(slider.val) - 1  # Adjust for zero-based index
+    is_paused = False
+
+    def init():
+        scat_creatures.set_offsets(np.empty((0, 2)))
+        scat_foods.set_offsets(np.empty((0, 2)))
+        return scat_creatures, scat_foods
+
+    def update_frame(frame):
         creatures, foods_list = simulation_data[frame]
-        x_creatures = []
-        y_creatures = []
-        for creature in creatures:
-            x, y = get_creature_position(creature)
-            x_creatures.append(x)
-            y_creatures.append(y)
-        x_foods = []
-        y_foods = []
-        for food in foods_list:
-            x, y = get_food_position(food)
-            x_foods.append(x)
-            y_foods.append(y)
-        scat_creatures.set_offsets(list(zip(x_creatures, y_creatures)))
-        scat_foods.set_offsets(list(zip(x_foods, y_foods)))
-        fig.canvas.draw_idle()
 
-    slider.on_changed(update)
-    update(1)  # Initialize with the first frame
+        # Extract creature positions
+        x_creatures = [get_creature_position(creature)[0] for creature in creatures]
+        y_creatures = [get_creature_position(creature)[1] for creature in creatures]
+
+        # Extract food positions
+        x_foods = [get_food_position(food)[0] for food in foods_list]
+        y_foods = [get_food_position(food)[1] for food in foods_list]
+
+        # Prepare offsets for creatures
+        if x_creatures and y_creatures:
+            creature_offsets = np.column_stack((x_creatures, y_creatures))
+        else:
+            creature_offsets = np.empty((0, 2))
+
+        # Prepare offsets for foods
+        if x_foods and y_foods:
+            food_offsets = np.column_stack((x_foods, y_foods))
+        else:
+            food_offsets = np.empty((0, 2))
+
+        # Update scatter plots
+        scat_creatures.set_offsets(creature_offsets)
+        scat_foods.set_offsets(food_offsets)
+
+        return scat_creatures, scat_foods
+
+    ani = animation.FuncAnimation(
+        fig,
+        update_frame,
+        frames=len(simulation_data),
+        init_func=init,
+        blit=True,
+        interval=interval,
+        repeat=False
+    )
+
+    def on_pause(event):
+        nonlocal is_paused
+        if is_paused:
+            ani.event_source.start()
+            pause_button.label.set_text('Pause')
+        else:
+            ani.event_source.stop()
+            pause_button.label.set_text('Play')
+        is_paused = not is_paused
+
+    def on_restart(event):
+        ani.event_source.stop()
+        ani.frame_seq = ani.new_frame_seq()
+        ani.event_source.start()
+        if is_paused:
+            on_pause(event)
+
+    # Pause Button
+    ax_pause = plt.axes([0.3, 0.05, 0.1, 0.075])
+    pause_button = Button(ax_pause, 'Pause')
+    pause_button.on_clicked(on_pause)
+
+    # Restart Button
+    ax_restart = plt.axes([0.6, 0.05, 0.1, 0.075])
+    restart_button = Button(ax_restart, 'Restart')
+    restart_button.on_clicked(on_restart)
+
     plt.show()

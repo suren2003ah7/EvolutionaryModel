@@ -176,9 +176,9 @@ def eat_creature(creature):
 
 def calculate_and_set_new_energy(creature, number_of_steps):
     current_energy = get_energy(creature)
-    energy_loss = (number_of_steps + ceil(get_eyesight(creature) / 3) +
+    energy_loss = int(0.35 * (number_of_steps + ceil(get_eyesight(creature) / 3) +
                    floor(get_aggression(creature) / 5) + floor(sqrt(get_strength(creature))) +
-                   floor((get_stamina(creature) / 7) + 1))
+                   floor((get_stamina(creature) / 7) + 1)))
     new_energy = current_energy - energy_loss
     return set_energy(creature, new_energy)
 
