@@ -44,21 +44,46 @@ A more scientific definition to the term evolution was given by Douglas Futuyma 
 \end{quotation}
 
 Evolution can occur by different means, such as natural selection, genetic drift, mutation, migration and so on. This report will simulate the process of species evolving over time by adapting to their environment through mutations and natural selection. It will explore scenarios with different starting conditions, where diverse creatures with unique genes inhabit varying environments. The study will examine how these genes mutate over time and determine which mutations dominate in each specific setting.
+\newpage
+
+\section{Glossary}
+
+Let one first establish some notions which are being discussed throughout this report.
+
+\subsection{Natural Selection}
+
+Elena Racevska defined natural selection as follows.
+
+\begin{quotation}
+    Natural selection is a process by which organisms that are better adapted to specific pressures of their environment tend to survive longer and produce more offspring, thus ensuring the preservation and multiplication of those favorable traits through generations, at the expense of the less advantageous ones.
+\end{quotation}
+
+If there were no limitations on any species, then it would boundlessly grow. The nature is preventing this by imposing various limitations and creating an environment where species need to survive by adapting to the realities around them. Such limitations may include food limitations, disadvantageous climate conditions, diseases, natural disasters, rival species and so on. In this way, the nature "selects" those species which will be able to reproduce and hence create an evolutionary change. The article published at Stanford University makes in interesting analogy. 
+
+\begin{quotation}
+    Much like breeders choose which of their animals will reproduce and thereby create the various breeds of domesticated dogs, pigeons, and cattle, nature effectively “selects” which animals will breed and creates evolutionary change just as breeders do.
+\end{quotation}
+
+\subsection{Mutation}
+
+A mutation is a change in a genetic sequence. In biology, it is usually discussed as a negative alteration of a creature's genetic code, which causes various genetic diseases. In the scope of this paper, a mutation is a change in the genome of a creature which has passed to the creature's off-springs when it reproduced. That is, when a creature reproduces, the genes of it's off-springs might be slightly modified. Some traits of the offspring might remain the same, others might change.
+
+\newpage
 
 \section{Methods}
-\subsubsection{Creature}
+\subsection{Creature}
 A creature is defined with its genome, position and energy.
 The genome consists of 5 genes that represent certain characteristics of that creature.
 The position shows the creature's position in the grid and the energy shows its energy level.
-\subsubsection{Food}
-Food are randomly generated when a simulation is initiated and randomly spawns in each timestep, but with a predefined limit.
-\subsubsection{Energy}
+\subsection{Food}
+Food are randomly generated when a simulation is initiated and randomly spawns in each time-step, but with a predefined limit.
+\subsection{Energy}
 A creature starts with predefined base energy level, and dies when the energy level reaches 0.
 The creatures gains energy by consuming food or winning an attack against another creature, and loses energy when moving.
-\subsubsection{Attack}
+\subsection{Attack}
 A creature has a gene for its level of aggression, which shows how likely it is to initiate an attack.
 The winner is determined by the strength gene. The winner gains energy, while the loser dies.
-\subsubsection{Reproduction and Mutations}
+\subsection{Reproduction and Mutations}
 If a creature gains energy with a certain ratio of its maxmimum energy, it reproduces and gives 1 offspring, and loses a certain ratio of its energy.
 The offspring is spawned in an adjacent positon and each gene is copied from its parent, with a certain probability for each gene to change by a value of 1.
 \subsection{Memory optimization}
