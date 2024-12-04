@@ -214,3 +214,5 @@ def calculate_and_set_new_energy(creature, number_of_steps):
                                                  floor((get_stamina(creature) / 7) + 1)))
     new_energy = current_energy - energy_loss
     return set_energy(creature, new_energy)
+
+# TODO: OPTIMIZE USING CPYTHON

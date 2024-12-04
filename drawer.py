@@ -99,4 +99,4 @@ def animate_simulation(simulation_data, interval=200):
     plt.show()
 
 
-# per step population
+# TODO: FIX WHATEVER THIS IS

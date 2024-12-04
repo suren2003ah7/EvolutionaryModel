@@ -82,3 +82,5 @@ def simulate_food():
     while amount_of_food_to_generate > 0:
         create_food()
         amount_of_food_to_generate -= 1
+
+# TODO: OPTIMIZE USING CPYTHON, ADD CROSS FUNCTIONALITY WITH OTHER GEOMETRY TYPES.

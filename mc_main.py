@@ -101,3 +101,5 @@ visualize_results(simulation_data)
 
 # Visualize the trait distributions
 visualize_relative_frequencies(trait_data)
+
+# TODO: ADD 95, 5 percentiles as well
