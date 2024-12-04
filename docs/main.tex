@@ -66,35 +66,71 @@ If there were no limitations on any species, then it would boundlessly grow. The
 
 \subsection{Mutation}
 
-A mutation is a change in a genetic sequence. In biology, it is usually discussed as a negative alteration of a creature's genetic code, which causes various genetic diseases. In the scope of this paper, a mutation is a change in the genome of a creature which has passed to the creature's off-springs when it reproduced. That is, when a creature reproduces, the genes of it's off-springs might be slightly modified. Some traits of the offspring might remain the same, others might change.
+A mutation is a change in a genetic sequence. In biology, it is usually discussed as a negative alteration of a creature's genetic code, which causes various genetic diseases. In the scope of this paper, a mutation is the change in the genome of an offspring compared to genome of it's parent. That is, when a creature reproduces, the genes of it's off-springs might be slightly modified (also called somatic mutation). Some traits of the offspring might remain the same, others might change.
 
-\newpage
+\subsection{Asexual Reproduction}
 
-\section{Methods}
+The species which is being simulated in this report reproduce asexually. The Journal of Evolutionary Biology put the definition of asexual reproduction in the following manner.
+
+\begin{quotation}
+    Asexual reproduction occurs when an individual produces new individuals that are genetically identical to the ancestor at all loci in the genome, except at those sites that have experienced somatic mutations.
+\end{quotation}
+
+In simpler terms, each representative of a species reproduce on its own and copies itself, with a chance that the offspring (copy) will have a slightly mutated, modified genome.
+
+\section{Simulation Setting}
+
+Let one first define the simulation setting. Each simulation is a collection of time steps. First, the environment and all of its components are being initialized, then the generated entities iterate through a predefined number of steps, and finally at the end the data is being collected and analyzed.
+
 \subsection{Creature}
-A creature is defined with its genome, position and energy.
-The genome consists of 5 genes that represent certain characteristics of that creature.
-The position shows the creature's position in the grid and the energy shows its energy level.
-\subsection{Food}
-Food are randomly generated when a simulation is initiated and randomly spawns in each time-step, but with a predefined limit.
-\subsection{Energy}
-A creature starts with predefined base energy level, and dies when the energy level reaches 0.
-The creatures gains energy by consuming food or winning an attack against another creature, and loses energy when moving.
-\subsection{Attack}
-A creature has a gene for its level of aggression, which shows how likely it is to initiate an attack.
-The winner is determined by the strength gene. The winner gains energy, while the loser dies.
+
+A creature is a single representative of the species one is observing. Each time step, a creature is looking around in search for food, goes towards the food if it sees any, and eats the food if the food is nearby. The creature can also decide to battle another creature if they are in the same location and eat them in case of victory. If in a favorable position, the creature will reproduce, creating an offspring.
+
+Each creature has a genome, a position in the environment and an energy level. Let one discuss each of these separately.
+
+\subsubsection{Genome}
+
+The genome of a creature is what defines the characteristics (traits) of that creature. It resembles the DNA of the creature which is predefined by nature. The genome and it's change through generations is how evolution is observed, and it is the primary focus of this study.
+
+The genome consists of 5 individual genes, each of which depicts a certain trait. Here are the general descriptions of the traits.
+
+\begin{enumerate}
+    \item \textbf{Speed} - determines the maximal distance that the creature can travel in a single time step.
+    \item \textbf{Eyesight} - determines the area which is visible to the creature. It is mostly used to locate food and move towards it.
+    \item \textbf{Aggression} - determines if the creature will engage in a fight or not. A higher aggression value means that the creature is more likely to start a battle, while a lower value means the creature is more likely to avoid contact and mind it's own business.
+    \item \textbf{Strength} - determines the physical abilities of the creatures in case of a fight. A creature with a higher strength value is more likely to win the battle against a creature with a lower strength value.
+    \item \textbf{Stamina} - determines the endurance of the creature, how long can the creature last without resources and at most how much energy it can store in itself. 
+\end{enumerate}
+
+\subsubsection{Position}
+
+The position of a creature describes the location of the creature in a given environment. Position has different meanings depending on different environments. For example, the position of a creature on a plane is a coordinate pair $(x, y)$, on a line its a single number, in space its a coordinate triple $(x, y, z)$ and so on. For each environment, the position will be separately defined, which majorly affects on how creatures move, hence affecting the evolution.
+
+\subsubsection{Energy}
+
+The energy of a creature showcases the physical power left in the creature to continue surviving. A non-positive value for the energy means that the creature has no power left and hence dies. Each time step, every creature loses energy on moving and supporting their physical existence. Creatures gain energy by eating food or other creatures if they win in a battle. The energy is also used to reproduce, since a certain threshold of energy must be satisfied so that the creature is able to reproduce.
+
+Each creature has maximal energy. The maximal energy a creature can have is determined by the stamina of the creature. If the creature has a higher stamina, then it has a higher capacity to store energy, while a lower stamina will result in a lower maximal energy.
+
 \subsection{Reproduction and Mutations}
-If a creature gains energy with a certain ratio of its maxmimum energy, it reproduces and gives 1 offspring, and loses a certain ratio of its energy.
-The offspring is spawned in an adjacent positon and each gene is copied from its parent, with a certain probability for each gene to change by a value of 1.
+
+The species in question reproduce asexually. If a creature gains energy with a certain ratio of its maximal energy, it reproduces, gives 1 offspring, and loses a certain ratio of its energy because of it. It is the only way a creature can spawn in naturally in the simulation, except the initially generated creatures at the beginning of the simulation.
+
+The offspring is spawned in an adjacent position and each gene is copied from its parent, with a certain probability for each gene to change by a value of 1.
+
 \subsection{Memory optimization}
 The creature is defined as an unsigned 32-bit integer, where the first 16 bits represent the genome, the next 12 bits represent its position cell and the last 4 bits represent the energy.
+
 \subsection{Energy loss}
+
 \[\text{energy loss}=\text{steps}+\left\lceil\frac{\text{eyesight}}{3}\right\rceil+\left\lfloor\frac{\text{aggression}}{5}\right\rfloor+\left\lfloor\sqrt{\text{strength}}\right\rfloor+\left\lfloor\frac{\text{stamina}}{7}+1\right\rfloor\]
 \[\text{eyesight}\in\{0,1,...,7\}\]
 \[\text{aggression}\in\{0,1,...,7\}\]
 \[\text{strength}\in\{1,2,...,16\}\]
 \[\text{stamina}\in\{-7,-6,...,8\}\]
+
 All these values have an effect on how much energy the creature spends. Steps are the number of steps. We have no energy loss from aggression, up until the value of 5.
+
 \begin{table}[H]
 \begin{center}
     \begin{tabular}{|p{0.11\linewidth} |p{0.08\linewidth}|p{0.7\linewidth}|}
@@ -197,6 +233,7 @@ The following constants were chosen for our simulations:
 Code is availabe at \href{https://github.com/suren2003ah7/EvolutionaryModel}{https://github.com/suren2003ah7/EvolutionaryModel}.
 \section{Discussion}
 We have simulated the model with several cases, however we may try on more complex cases.
+
 \begin{enumerate}
     \item Random genes. Try many random genes for creatures and see if we reach equilibrium of one gene.
     \item Strong specific genes. Start with high values for specific genes and see if we reach equilibrium or not after mutaitons.
