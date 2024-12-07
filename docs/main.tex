@@ -5,6 +5,7 @@
 \usepackage{float}
 \usepackage{tikz}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage[affil-it]{authblk}\hypersetup{
     colorlinks,
@@ -25,7 +26,7 @@
     Instructor: Varazdat Stepanyan 
 }
 \affil{American University of Armenia}
-\date{November 2024}
+\date{December 2024}
 \begin{document}
 \maketitle
 \newpage
@@ -48,7 +49,7 @@ Evolution can occur by different means, such as natural selection, genetic drift
 
 \section{Glossary}
 
-Let one first establish some notions which are being discussed throughout this report.
+Let one first establish some notions which are being discussed throughout this report. These definitions will help the reader more easily grasp the material of this paper, including terms related to biology and mathematics.
 
 \subsection{Natural Selection}
 
@@ -78,9 +79,21 @@ The species which is being simulated in this report reproduce asexually. The Jou
 
 In simpler terms, each representative of a species reproduce on its own and copies itself, with a chance that the offspring (copy) will have a slightly mutated, modified genome.
 
+\subsection{Manhattan Distance}
+
+For any two points $p, q \in \mathbb{R}^n$, the manhattan distance (also called taxicab distance) is defined as
+
+\[
+    d_T(p, q) = \|p - q\|_T = \sum_{i = 1}^n |p_i - q_i| 
+\]
+
+In particular, for a plane ($\mathbb{R}^2$) the manhattan distance between two points is $d_2(p, q) = |p_1 - q_1| + |p_2 - q_2|$.
+
+\newpage
+
 \section{Simulation Setting}
 
-Let one first define the simulation setting. Each simulation is a collection of time steps. First, the environment and all of its components are being initialized, then the generated entities iterate through a predefined number of steps, and finally at the end the data is being collected and analyzed.
+Let one first define the simulation setting. Each simulation is a collection of time steps. First, the environment and all of its components are being initialized, then the generated entities iterate through a predefined number of steps, and finally at the end the data is being collected, analyzed and visualized.
 
 \subsection{Creature}
 
@@ -92,14 +105,14 @@ Each creature has a genome, a position in the environment and an energy level. L
 
 The genome of a creature is what defines the characteristics (traits) of that creature. It resembles the DNA of the creature which is predefined by nature. The genome and it's change through generations is how evolution is observed, and it is the primary focus of this study.
 
-The genome consists of 5 individual genes, each of which depicts a certain trait. Here are the general descriptions of the traits.
+The genome consists of 5 individual genes, each of which depicts a certain trait. Here are the general descriptions of the traits. Note the possible values taken for each trait are only integers.
 
 \begin{enumerate}
-    \item \textbf{Speed} - determines the maximal distance that the creature can travel in a single time step.
-    \item \textbf{Eyesight} - determines the area which is visible to the creature. It is mostly used to locate food and move towards it.
-    \item \textbf{Aggression} - determines if the creature will engage in a fight or not. A higher aggression value means that the creature is more likely to start a battle, while a lower value means the creature is more likely to avoid contact and mind it's own business.
-    \item \textbf{Strength} - determines the physical abilities of the creatures in case of a fight. A creature with a higher strength value is more likely to win the battle against a creature with a lower strength value.
-    \item \textbf{Stamina} - determines the endurance of the creature, how long can the creature last without resources and at most how much energy it can store in itself. 
+    \item \textbf{Speed} - determines the maximal distance that the creature can travel in a single time step. Takes values between 1 and 4.
+    \item \textbf{Eyesight} - determines the area which is visible to the creature. It is mostly used to locate food and move towards it. Takes values between 0 and 7.
+    \item \textbf{Aggression} - determines if the creature will engage in a fight or not. A higher aggression value means that the creature is more likely to start a battle, while a lower value means the creature is more likely to avoid contact and mind it's own business. Takes values between 0 and 7.
+    \item \textbf{Strength} - determines the physical abilities of the creatures in case of a fight. A creature with a higher strength value is more likely to win the battle against a creature with a lower strength value. Takes values between 1 and 16.
+    \item \textbf{Stamina} - determines the endurance of the creature, how long can the creature last without resources and at most how much energy it can store in itself. Takes values between -7 and 8.
 \end{enumerate}
 
 \subsubsection{Position}
@@ -108,43 +121,18 @@ The position of a creature describes the location of the creature in a given env
 
 \subsubsection{Energy}
 
-The energy of a creature showcases the physical power left in the creature to continue surviving. A non-positive value for the energy means that the creature has no power left and hence dies. Each time step, every creature loses energy on moving and supporting their physical existence. Creatures gain energy by eating food or other creatures if they win in a battle. The energy is also used to reproduce, since a certain threshold of energy must be satisfied so that the creature is able to reproduce.
+The energy of a creature showcases the physical power left in the creature to continue surviving. A non-positive value for the energy means that the creature has no power left and hence dies. Each time step, every creature loses energy on moving and supporting their physical existence (see section 3.1.5). Creatures gain energy by eating food or other creatures if they win in a battle. The energy is also used to reproduce, since a certain threshold of energy must be satisfied so that the creature is able to reproduce.
 
-Each creature has maximal energy. The maximal energy a creature can have is determined by the stamina of the creature. If the creature has a higher stamina, then it has a higher capacity to store energy, while a lower stamina will result in a lower maximal energy.
+Each creature has maximal energy. It is showing the energy capacity of the creature, how much energy can the creature store in itself. The maximal energy is defined as
 
-\subsection{Reproduction and Mutations}
+\[
+    ME(\text{gene}) = 8 + \text{stamina}
+\]
 
-The species in question reproduce asexually. If a creature gains energy with a certain ratio of its maximal energy, it reproduces, gives 1 offspring, and loses a certain ratio of its energy because of it. It is the only way a creature can spawn in naturally in the simulation, except the initially generated creatures at the beginning of the simulation.
+\subsubsection{Memory Optimization}
 
-The offspring is spawned in an adjacent position and each gene is copied from its parent, with a certain probability for each gene to change by a value of 1.
+In order to make the simulation possible to run for relatively big populations in a reasonable time frame, the creatures were designed to take as less space as possible. In the current implementation, each creature is an unsigned 32-bit integer, where (starting from the left) the first 16 bits represent its genome, the next 12 bits represent its position and the last 4 bits represent its current energy. The figures below visualizes the structure of an individual creature more vividly.
 
-\subsection{Memory optimization}
-The creature is defined as an unsigned 32-bit integer, where the first 16 bits represent the genome, the next 12 bits represent its position cell and the last 4 bits represent the energy.
-
-\subsection{Energy loss}
-
-\[\text{energy loss}=\text{steps}+\left\lceil\frac{\text{eyesight}}{3}\right\rceil+\left\lfloor\frac{\text{aggression}}{5}\right\rfloor+\left\lfloor\sqrt{\text{strength}}\right\rfloor+\left\lfloor\frac{\text{stamina}}{7}+1\right\rfloor\]
-\[\text{eyesight}\in\{0,1,...,7\}\]
-\[\text{aggression}\in\{0,1,...,7\}\]
-\[\text{strength}\in\{1,2,...,16\}\]
-\[\text{stamina}\in\{-7,-6,...,8\}\]
-
-All these values have an effect on how much energy the creature spends. Steps are the number of steps. We have no energy loss from aggression, up until the value of 5.
-
-\begin{table}[H]
-\begin{center}
-    \begin{tabular}{|p{0.11\linewidth} |p{0.08\linewidth}|p{0.7\linewidth}|}
-    \hline
-    Gene & Bits & Description  \\\hline
-    Speed & 2 & Takes values between 1 and 4, showing the Manhattan distance the creature can walk in a single timestep.\\\hline
-    Eyesight & 3 & Takes values between 0 and 7, showing the Manhattan distance the creature can see.\\\hline
-    Aggression & 3 & Takes values between 0 to 7, mapped to 0\% - 100\%, showing the probability of the creature attacking another creature in the same cell. \\\hline
-    Strength & 4 & Takes values between 1 and 16, which determines the winner in a fight \\\hline
-    Stamina & 4 & Takes values between -7 and 8, which is added to the base energy level, when generating the creature\\\hline
-\end{tabular}
-\caption{Creature characteristics and their descriptions}
-\end{center}
-\end{table}
 \begin{figure}[!h]
 \begin{center}
 \begin{tikzpicture}[scale=0.9]
@@ -201,29 +189,100 @@ All these values have an effect on how much energy the creature spends. Steps ar
 \caption{Position storage}
 \end{center}
 \end{figure}
-The creatures are stored in a list and are iterated over in every timestep.
+
+\newpage This makes a huge impact on memory usage. Let one compare this approach with the one where each trait, position and energy is stored in a separate 32 bit integer. If one has $n$ creatures at a given time step, then the implementation described above will require $32n$ bits for storing all the creatures. On the contrary, if one uses 32 bit numbers for each parameter of the creature, then it would require at least $224$ bits to store one creature and $224n$ bits for storing the whole population, 7 times more than with bit manipulations. For example, let $n = 100$, a number which was exceeded by the simulations many times, so it is not a very high number to consider. With bit manipulations, the total memory required is 3200 bits, that is 400 bytes. Without bit manipulation one looks at 22400 bits, which is roughly 2.73 kilobytes.
+
+\subsubsection{Energy Loss}
+
+The energy loss is a function which determines how much energy does the creature lose in order to support itself. For the purposes of this paper, the energy loss function has been chosen to be the following.
+
+\[
+EL(\text{gene}) = \left[ 0.35 \left(
+\text{steps} 
++ \left\lceil \frac{\text{eyesight}}{3} \right\rceil 
++ \left\lfloor \frac{\text{aggression}}{5} \right\rfloor 
++ \left\lfloor \sqrt{\text{strength}} \right\rfloor 
++ \left\lfloor \frac{\text{stamina}}{7} + 1 \right\rfloor
+\right) \right]
+\]
+\[0 \leq \text{steps} \leq \text{speed}\in\{1,2,3,4\}\]
+\[\text{eyesight}\in\{0,1,...,7\}\]
+\[\text{aggression}\in\{0,1,...,7\}\]
+\[\text{strength}\in\{1,2,...,16\}\]
+\[\text{stamina}\in\{-7,-6,...,8\}\]
+
+The steps in the energy loss function is the number of steps taken in the given move. For example, the creature might have speed with value 4 but only do 2 steps to reach the food nearby, so it only spends 2 units of energy, but not 4. Other traits makes the creature constantly use energy to support them.
+
+It is important to understand that the energy loss function is specific to the purpose of the simulation. Depending on what simulation one is doing and what the environment is, this function can have a completely different form. This function is good enough for the purposes of this paper. The differences in constants tries to showcase how some traits are "cheaper" to maintain, while others require more energy. However, it is to be noted here that if some trait is easier to maintain that doesn't mean that creatures are going to always favor it in any environment, the simulations and results are much more complex than that.
+
+\subsection{Food}
+
+As already discussed above, one of the means for creature to gain energy and support their further survival is through finding and consuming food. Food is a naturally generating unit. After each time step, food is being updated based on the food cap set at the beginning of the simulation. Usually, it is set to meet a certain percentage of available area. During every time step the missing food is naturally replenished to keep the environment as constant as possible.
+
+\subsection{Reproduction and Mutations}
+
+The species in question reproduce asexually. If a creature's energy level increases more than $80\%$ of its maximal possible energy, it reproduces, gives 1 offspring, and loses $50\%$ of it's current energy because of it. Reproduction is the only way a creature can spawn in naturally in the simulation. The only exceptions are the initially generated creatures at the beginning of the simulation.
+
+Each individual trait of the gene has an $8\%$ chance of mutating and increasing/decreasing its value by 1 unit. If one denotes $M$ as the event of getting mutations, then the probability of getting at least one mutation happening in an offspring is
+
+\[
+    \mathbb{P}(M \geq 1) = 1 - \mathbb{P}(M = 0) = 1 - 0.92^5 \approx 0.341 
+\]
+
+One can argue that this percentage is quite high and would have a point. However, each additional step in a simulation exponentially adds the waiting time for that simulation, hence the mutation percent is high so that meaningful results can be obtained in a reasonable amount of time.
+
+\newpage
+
 \section{Results}
-The following constants were chosen for our simulations:
-\begin{table}[H]
-    \begin{center}
-        \begin{tabular}{|p{0.24\linewidth} |p{0.08\linewidth}|p{0.55\linewidth}|}
-        \hline
-        Constant & Value & Notes  \\\hline
-        Grid size & \(64\) & \(2^6\times 2^6\) grid\\\hline        
-        Food cap & 0.05 & 5\% of the grid\\\hline
-        Init creatures & 0.01 & We start with 1\% of the grid being creatures\\\hline
-        Steps & 10000 & Number of timesteps\\\hline
-        Base energy & 8 & Base energy\\\hline
-        Energy from food & 5 & Energy gained from consuming food\\\hline
-        Energy from creature & 8 & Energy gained from consuming another creature\\\hline
-        Energy ratio to reproduce & 0.9 & When energy level reaches 90\% of the creatures max energy, it reproduces\\\hline
-        Energy ratio for reproduce & 0.2 & 20\% of energy is consumed for reproduction\\\hline
-        Number of children & 1 & Each reproduction only produces a single offspring\\\hline
-        Mutation probability & 0.01 & There is a 1\% change for each gene to mutate during reproduction\\\hline
-    \end{tabular}
-    \caption{Creature characteristics and their descriptions}
-    \end{center}
-    \end{table}
+
+\subsection{Grid Environment}
+
+The grid environment is a plane where the values on each axis are integers. The position of the creatures is expressed by two coordinates: $x$ and $y$. Since there are 12 bits to store the position of the creature, the first 6 bits will store $x$ and the other 6 will store the value of $y$. This means that $0 \leq x, y \leq 63$, since one can have 64 values with 6 bits for each coordinate. That also fixes the size of the grid: 64 x 64, 64 possible values for each coordinate.
+
+\subsubsection{Scenario 1: Average Gene}
+
+In this scenario, the starting gene for all creatures is set to be a gene with average traits. More specifically, the gene is represented by the following 16 bits: 0101101110001000, which means 2 speed, 3 eyesight, 3 aggression, 8 strength and 1 stamina.
+
+\textbf{Simulation 1} - 1\% Food, 1\% Creatures
+
+\textbf{Simulation 2} - 1\% Food, 5\% Creatures
+
+\textbf{Simulation 3} - 1\% Food, 20\% Creatures
+
+\textbf{Simulation 4} - 5\% Food, 1\% Creatures
+
+\textbf{Simulation 5} - 5\% Food, 5\% Creatures
+
+\textbf{Simulation 6} - 5\% Food, 20\% Creatures
+
+\textbf{Simulation 7} - 20\% Food, 1\% Creatures
+
+\textbf{Simulation 8} - 20\% Food, 5\% Creatures
+
+\textbf{Simulation 9} - 20\% Food, 20\% Creatures
+
+\subsubsection{Scenario 2: Random}
+
+In this scenario, every creature starts up with a random gene.
+
+\textbf{Simulation 1} - 1\% Food, 1\% Creatures
+
+\textbf{Simulation 2} - 1\% Food, 5\% Creatures
+
+\textbf{Simulation 3} - 1\% Food, 20\% Creatures
+
+\textbf{Simulation 4} - 5\% Food, 1\% Creatures
+
+\textbf{Simulation 5} - 5\% Food, 5\% Creatures
+
+\textbf{Simulation 6} - 5\% Food, 20\% Creatures
+
+\textbf{Simulation 7} - 20\% Food, 1\% Creatures
+
+\textbf{Simulation 8} - 20\% Food, 5\% Creatures
+
+\textbf{Simulation 9} - 20\% Food, 20\% Creatures
+
 \begin{center}
     \includegraphics[scale=0.2]{images/image1.jpg}
 \end{center}
