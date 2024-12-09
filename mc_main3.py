@@ -22,12 +22,12 @@ logging.basicConfig(
 )
 
 # Monte Carlo Parameters
-NUM_SIMULATIONS = 5  # Number of Monte Carlo simulations per constants set
-NUM_STEPS = 5        # Number of steps in each simulation
+NUM_SIMULATIONS = 100  # Number of Monte Carlo simulations per constants set
+NUM_STEPS = 60        # Number of steps in each simulation
 
 # Define Food and Creature Percentages
-FOOD_PERCENTAGES = [0.10]      # 10%
-CREATURE_PERCENTAGES = [0.01, 0.10]  # 1%, 10%
+FOOD_PERCENTAGES = [0.01, 0.03, 0.05, 0.1, 0.2]      # 10%
+CREATURE_PERCENTAGES = [0.01, 0.03, 0.05]  # 1%, 10%
 
 # Backup Original Constants
 ORIGINAL_CONSTANTS = {

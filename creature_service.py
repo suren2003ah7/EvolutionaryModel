@@ -1,10 +1,7 @@
 import numpy as np
 from math import ceil, floor, sqrt
 from random import randint, random, choice
-from constants import (BASE_ENERGY_LEVEL, NUMBER_OF_CHILDREN_PER_REPRODUCTION,
-                       PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION, ENERGY_RATIO_REQUIRED_TO_REPRODUCE,
-                       ENERGY_RATIO_SPENT_TO_REPRODUCE, ENERGY_GAINED_FROM_EATING_FOOD,
-                       ENERGY_GAINED_FROM_EATING_CREATURE, ENERGY_LOSS_COEFFICIENT)
+import constants
 
 creatures = []
 
@@ -27,7 +24,7 @@ def create_offspring(parent_creature):
 
 
 def get_max_energy(creature):
-    return BASE_ENERGY_LEVEL + get_stamina(creature)
+    return constants.BASE_ENERGY_LEVEL + get_stamina(creature)
 
 
 def get_gene(creature):
@@ -105,10 +102,10 @@ def fight(creature, other_creature, creatures_to_remove):
 
 
 def reproduce_if_possible(creature):
-    if get_energy(creature) < int(get_max_energy(creature) * ENERGY_RATIO_REQUIRED_TO_REPRODUCE):
+    if get_energy(creature) < int(get_max_energy(creature) * constants.ENERGY_RATIO_REQUIRED_TO_REPRODUCE):
         return creature, []
     offsprings = []
-    number_of_offsprings = NUMBER_OF_CHILDREN_PER_REPRODUCTION
+    number_of_offsprings = constants.NUMBER_OF_CHILDREN_PER_REPRODUCTION
     while number_of_offsprings > 0:
         offspring = create_offspring(creature)
         offspring = try_mutating_speed(offspring)
@@ -119,13 +116,13 @@ def reproduce_if_possible(creature):
         offspring = set_energy(offspring, get_max_energy(offspring))
         offsprings.append(offspring)
         number_of_offsprings -= 1
-    new_energy = int(get_energy(creature) - int(get_max_energy(creature) * ENERGY_RATIO_SPENT_TO_REPRODUCE))
+    new_energy = int(get_energy(creature) - int(get_max_energy(creature) * constants.ENERGY_RATIO_SPENT_TO_REPRODUCE))
     creature = set_energy(creature, new_energy)
     return creature, offsprings
 
 
 def try_mutating_speed(creature):
-    if random() <= PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
+    if random() <= constants.PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
         mutation = choice([-1, 1])
         speed = get_speed(creature)
         if speed == 1 and mutation == -1:
@@ -139,7 +136,7 @@ def try_mutating_speed(creature):
 
 
 def try_mutating_eyesight(creature):
-    if random() <= PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
+    if random() <= constants.PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
         mutation = choice([-1, 1])
         eyesight = get_eyesight(creature)
         if eyesight == 0 and mutation == -1:
@@ -153,7 +150,7 @@ def try_mutating_eyesight(creature):
 
 
 def try_mutating_aggression(creature):
-    if random() <= PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
+    if random() <= constants.PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
         mutation = choice([-1, 1])
         aggression = get_aggression(creature)
         if aggression == 0 and mutation == -1:
@@ -167,7 +164,7 @@ def try_mutating_aggression(creature):
 
 
 def try_mutating_strength(creature):
-    if random() <= PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
+    if random() <= constants.PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
         mutation = choice([-1, 1])
         strength = get_strength(creature)
         if strength == 1 and mutation == -1:
@@ -181,7 +178,7 @@ def try_mutating_strength(creature):
 
 
 def try_mutating_stamina(creature):
-    if random() <= PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
+    if random() <= constants.PROBABILITY_OF_INDIVIDUAL_GENOME_MUTATION:
         mutation = choice([-1, 1])
         stamina = get_stamina(creature)
         if stamina == -7 and mutation == -1:
@@ -195,20 +192,20 @@ def try_mutating_stamina(creature):
 
 
 def eat_food(creature):
-    new_energy = min(get_energy(creature) + ENERGY_GAINED_FROM_EATING_FOOD, get_max_energy(creature))
+    new_energy = min(get_energy(creature) + constants.ENERGY_GAINED_FROM_EATING_FOOD, get_max_energy(creature))
     creature = set_energy(creature, new_energy)
     return creature
 
 
 def eat_creature(creature):
-    new_energy = min(get_energy(creature) + ENERGY_GAINED_FROM_EATING_CREATURE, get_max_energy(creature))
+    new_energy = min(get_energy(creature) + constants.ENERGY_GAINED_FROM_EATING_CREATURE, get_max_energy(creature))
     creature = set_energy(creature, new_energy)
     return creature
 
 
 def calculate_and_set_new_energy(creature, number_of_steps):
     current_energy = get_energy(creature)
-    energy_loss = int(ENERGY_LOSS_COEFFICIENT * (number_of_steps + ceil(get_eyesight(creature) / 3) +
+    energy_loss = int(constants.ENERGY_LOSS_COEFFICIENT * (number_of_steps + ceil(get_eyesight(creature) / 3) +
                                                  floor(get_aggression(creature) / 5) + floor(
                 sqrt(get_strength(creature))) +
                                                  floor((get_stamina(creature) / 7) + 1)))

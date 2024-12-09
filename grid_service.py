@@ -1,6 +1,6 @@
 from food_service import foods
 from numpy import random
-from constants import ENERGY_LOSS_PER_MOVE
+import constants
 
 def get_creature_position(creature):
     x = (creature & (0b111111 << 10)) >> 10
@@ -55,7 +55,7 @@ def move_towards_food(creature, food, number_of_moves):
         elif food_y < creature_y:
             creature_y -= 1
         number_of_moves -= 1
-        energy_loss += ENERGY_LOSS_PER_MOVE
+        energy_loss += constants.ENERGY_LOSS_PER_MOVE
     creature = set_creature_position(creature, creature_x, creature_y)
     return creature, energy_loss
 
@@ -74,7 +74,7 @@ def move_random(creature, number_of_moves):
         elif direction == 'right':
             x += 1
         number_of_moves -= 1
-        energy_loss += ENERGY_LOSS_PER_MOVE
+        energy_loss += constants.ENERGY_LOSS_PER_MOVE
     creature = set_creature_position(creature, x, y)
     return creature, energy_loss
 

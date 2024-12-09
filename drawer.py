@@ -2,15 +2,15 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import numpy as np
 from matplotlib.widgets import Button
-from constants import GRID_SIZE
+import constants
 from grid_service import get_creature_position, get_food_position
 
 
 def animate_simulation(simulation_data, interval=200):
     fig, ax = plt.subplots(figsize=(6, 6))
     plt.subplots_adjust(bottom=0.25)  # Adjust to make space for buttons
-    ax.set_xlim(0, GRID_SIZE)
-    ax.set_ylim(0, GRID_SIZE)
+    ax.set_xlim(0, constants.GRID_SIZE)
+    ax.set_ylim(0, constants.GRID_SIZE)
     ax.set_xlabel('X Position')
     ax.set_ylabel('Y Position')
     ax.grid(True)
