@@ -296,7 +296,8 @@ def monte_carlo_simulation_with_traits(num_simulations, num_steps):
         for sim in range(num_simulations):
             start = time.time()
             logging.info(f"Running Simulation {sim + 1}/{num_simulations}")
-            initialize_from_gene(0b0101101110001000)  # Reset simulation for each run
+            initialize()
+            # initialize_from_gene(0b0101101110001000)  # Reset simulation for each run
             population_counts = []
 
             for step in range(num_steps):
@@ -400,8 +401,8 @@ def run_simulation_set(set_index, food_pct, creature_pct, base_output_dir):
 
 # Create a base directory to store all simulation results
 base_output_dir = "simulation_results"
-average_gene_dir = os.path.join(base_output_dir, "average_gene")
-os.makedirs(average_gene_dir, exist_ok=True)  # Create 'average_gene' subdirectory
+random_gene_dir = os.path.join(base_output_dir, "random_gene")
+os.makedirs(random_gene_dir, exist_ok=True)  # Create 'random_gene' subdirectory
 
 set_index = 1  # To keep track of simulation set numbering
 
@@ -411,7 +412,7 @@ try:
             logging.info(
                 f"\nStarting Simulation Set {set_index}: Food {int(food_pct * 100)}%, Creature {int(creature_pct * 100)}%")
             try:
-                run_simulation_set(set_index, food_pct, creature_pct, average_gene_dir)
+                run_simulation_set(set_index, food_pct, creature_pct, random_gene_dir)
                 set_index += 1
             except KeyboardInterrupt:
                 logging.warning(f"Simulation interrupted during Simulation Set {set_index}.")

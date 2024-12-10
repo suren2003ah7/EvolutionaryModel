@@ -1,0 +1,15 @@
+eyesight,aggression,speed,strength,stamina,eyesight_bin,aggression_bin,speed_bin,strength_bin,stamina_bin
+0.0,0.0,0.0,1.0,0.0,Low,Low,Low,High,Low
+0.0,0.6666666666666666,0.0,0.5,0.8333333333333334,Low,High,Low,Medium,High
+0.0,0.0,0.0,0.0,1.0,Low,Low,Low,Low,High
+0.0,1.0,0.0,1.0,0.0,Low,High,Low,High,Low
+1.0,0.6666666666666666,1.0,1.0,0.8333333333333334,High,High,High,High,High
+1.0,0.6666666666666666,1.0,1.0,0.8333333333333334,High,High,High,High,High
+0.0,0.0,0.0,1.0,0.5,Low,Low,Low,High,Medium
+0.0,0.6666666666666666,0.0,0.0,0.8333333333333334,Low,High,Low,Low,High
+0.0,1.0,0.0,1.0,1.0,Low,High,Low,High,High
+0.0,1.0,0.0,1.0,0.16666666666666666,Low,High,Low,High,Low
+0.0,1.0,0.0,1.0,0.6666666666666666,Low,High,Low,High,High
+0.0,0.0,0.0,0.5,1.0,Low,Low,Low,Medium,High
+0.0,1.0,0.0,0.5,0.0,Low,High,Low,Medium,Low
+0.0,1.0,0.0,0.5,0.0,Low,High,Low,Medium,Low

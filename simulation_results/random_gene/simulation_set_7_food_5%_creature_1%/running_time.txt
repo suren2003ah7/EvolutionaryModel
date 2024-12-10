@@ -1,0 +1,2 @@
+Average Running Time: 8.07 seconds
+Running Time Variance: 8.94 seconds²
